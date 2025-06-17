@@ -4,28 +4,35 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   build:
+    name: Build APK with Buildozer
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.10'
 
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y zip unzip openjdk-11-jdk python3-pip build-essential
+          sudo apt install -y zip unzip openjdk-17-jdk python3-pip \
+            python3-setuptools git python3 python3-dev \
+            build-essential libssl-dev libffi-dev \
+            libgl1-mesa-dev libgles2-mesa-dev \
+            zlib1g-dev libncurses5-dev libsqlite3-dev \
+            libgdbm-dev libc6-dev libbz2-dev libreadline-dev \
+            libffi-dev libssl-dev libjpeg-dev libfreetype6-dev \
+            adb
+
           pip install --upgrade pip
-          pip install Cython
-          pip install buildozer
+          pip install buildozer cython
 
       - name: Build APK
         run: |
@@ -34,5 +41,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: jarvis-debug-apk
+          name: jarvis-assistant-apk
           path: bin/*.apk
